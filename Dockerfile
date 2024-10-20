@@ -1,8 +1,9 @@
 FROM php:8.1-fpm
 
 # Arguments defined in docker-compose.yml
-ARG user
-ARG uid
+ARG uid=1000
+ARG user=crater-user
+
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -36,5 +37,10 @@ RUN mkdir -p /home/$user/.composer && \
 
 # Set working directory
 WORKDIR /var/www
+ADD . .
+ADD ./docker-compose/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini:rw,delegated
+
+
+RUN chown -R $user:$user /var/www/**
 
 USER $user
